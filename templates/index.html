@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../static/style.css" />
+    <title>UNICEF-Afrilearn Recommender System</title>
+  </head>
+  <body>
+    <div class="container">
+      <img src="../static/logo.png" alt="Afrilearn" class="logo" />
+      <form action="/submit" method="POST">
+        <div class="form-group">
+          <h3>What is the most recent activity of this student?</h3>
+          School level : <input
+            type="text"
+            name="school_level"
+            placeholder="School level"
+          /><br>
+          Subject: <input
+            type="text"
+            name="subject"
+            placeholder="subject"
+          /><br>
+          Lesson: <input
+            type="text"
+            name="lesson"
+            placeholder="lesson id"
+          /><br>
+        </div>
+        <input type="submit" value="Submit" class="btn" />
+      </form>
+       <br>
+       <br>
+    </div>
+  </body>
+</html>

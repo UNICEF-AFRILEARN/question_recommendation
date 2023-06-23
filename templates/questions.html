@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../static/style.css" />
+    <title>Sequential Question Recommendation</title>
+  </head>
+  <body>
+    <div class="container">
+      <img src="../static/logo.png" alt="Afrilearn" class="logo" />
+      <form action="/submit" method="POST">
+        <div class="form-group">
+          <h3>Enter student details to test API?</h3>
+          UserId : <input
+            type="text"
+            name="userId"
+            placeholder="userId"
+          /><br>
+          Class: <input
+            type="text"
+            name="class_name"
+            placeholder="class_name"
+          /><br>
+          Number of questions: <input
+            type="text"
+            name="n_questions"
+            placeholder="n_questions"
+          /><br>
+          Recommendation type: <input
+            type="text"
+            name="rec_type"
+            placeholder="rec_type(optional)"
+          /><br>
+          lessonId: <input
+            type="text"
+            name="lessonId"
+            placeholder="lessonId(optional)"
+          /><br>
+          Subject: <input
+            type="text"
+            name="subject_name"
+            placeholder="subject_name"
+          /><br>
+        </div>
+        <input type="submit" value="Submit" class="btn" />
+      </form>
+       <br>
+       <br>
+    </div>
+  </body>
+</html>
