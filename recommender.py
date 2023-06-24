@@ -1,4 +1,5 @@
 from bson import ObjectId
+import pandas as pd
 import pickle
 
 
@@ -13,7 +14,7 @@ def get_recommendations(userId,class_name,n_questions,rec_type=None,lessonId=Non
                     "SSS One": 3, "SSS Two":4, "SSS Three":5}
     class_label = class_name_dict[class_name]
     
-    responses = pickle.load(open('responses.pkl','rb'))
+    responses = pd.read_pickle('responses.zip',compression='zip')
     responses_df = responses["responses_df"+str(class_label)]
     
     label_transforms =  pickle.load(open('encoders.pkl','rb'))
