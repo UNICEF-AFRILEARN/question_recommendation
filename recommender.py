@@ -33,7 +33,8 @@ def get_recommendations(courseId,n_questions,userId=None,rec_type=None,lessonId=
         if len(unattempted_questions)==0:
             unattempted_questions = pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":userId_encoded})))
 
-        unattempted_questions= unattempted_questions.drop(["course_Id"],axis=1)
+        unattempted_questions= unattempted_questions.drop(["_id","course_Id"],axis=1)
+
 
         models =  pickle.load(open('classifiers.pkl','rb'))
         model = models["classifier"+str(class_label)]
