@@ -63,7 +63,7 @@ def get_recommendations(courseId,n_questions,userId=None,rec_type=None,lessonId=
         else:
             unattempted_questions.sort_values(by="prob_correct",ascending=False,inplace = True)
             recommended_questions = unattempted_questions['questionId'].values[:n_questions]
-            recommended_questions  = le_questionId.inverse_transform(recommended_questions)
+        recommended_questions  = le_questionId.inverse_transform(recommended_questions)
     else:
         questions = pickle.load(open('questions.pkl','rb'))
         recommended_questions=random.choices(list(questions['_id'].unique()),k=10)
