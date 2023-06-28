@@ -9,16 +9,18 @@ def get_prob_correct(model,unattempted_questions):
     prob_correct = model.predict_proba(X)[:,1]
     return prob_correct
 
-def get_recommendations(userId,class_name,n_questions,rec_type=None,lessonId=None,subject_name=None):
-    class_name_dict={"JSS One":0,"JSS Two": 1, "JSSS Three": 2,
-                    "SSS One": 3, "SSS Two":4, "SSS Three":5}
-    class_label = class_name_dict[class_name]
+def get_recommendations(userId,courseId,n_questions,rec_type=None,lessonId=None,subject_name=None):
+    classid_dict={"5fff72b3de0bdb47f826feaf":0,"5fff7329de0bdb47f826feb0": 1, "5fff734ade0bdb47f826feb1": 2,
+                    "5fff7371de0bdb47f826feb2": 3, "5fff7380de0bdb47f826feb3":4, "5fff7399de0bdb47f826feb4":5}
+    class_label = classid_dict[courseId]
     
-    responses = pd.read_pickle('responses.zip',compression='zip')
-    responses_df = responses["responses_df"+str(class_label)]
+    responses_df = pd.read_parquet('responses.parquet')
+    responses_df = responses_df[responses_df["course_Id"]==courseId]
+
+    responses_df = responses_df.drop(["course_Id"],axis=1)
     
     label_transforms =  pickle.load(open('encoders.pkl','rb'))
-    label_encoders = label_transforms["encoder"+str(class_label)]
+    label_encoders = label_transforms["label"+str(class_label)]
     le_userId = label_encoders[2]
     userId_encoded = le_userId.transform([userId])[0]
     
@@ -45,7 +47,7 @@ def get_recommendations(userId,class_name,n_questions,rec_type=None,lessonId=Non
     elif rec_type=="subject":
         if subject_name:
             subject_name = le_subjectname.transform([subject_name])[0]
-            subject_recommendation_df= unattempted_questions[unattempted_questions["subject_name"]==subject_name]
+            subject_recommendation_df= unattempted_questions[unattempted_questions["subjectId"]==subject_name]
             subject_recommendation_df.sort_values(by="prob_correct",ascending=False,inplace = True)
             print(subject_recommendation_df)
             recommended_questions = subject_recommendation_df['questionId'].values[:n_questions]
