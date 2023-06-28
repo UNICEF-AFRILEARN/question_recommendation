@@ -34,7 +34,7 @@ def submit():
         rec_type = request.form['rec_type']
         lessonId = request.form['lessonId']
         subject_name = request.form['subject_name']
-        if (userId == '') or (class_name == '') or (n_questions == ''):
+        if (class_name == '') or (n_questions == ''):
             return render_template('index.html', message='Please enter required fields')
         else:
             questions = get_recommendations([ObjectId(userId)],class_name,n_questions,rec_type,lessonId,subject_name)
