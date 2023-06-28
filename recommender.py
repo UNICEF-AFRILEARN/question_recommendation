@@ -10,7 +10,7 @@ def get_prob_correct(model,unattempted_questions):
     prob_correct = model.predict_proba(X)[:,1]
     return prob_correct
 
-def get_recommendations(userId,courseId,n_questions,rec_type=None,lessonId=None,subject_name=None):
+def get_recommendations(courseId,n_questions,userId=None,rec_type=None,lessonId=None,subject_name=None):
     classid_dict={"5fff72b3de0bdb47f826feaf":0,"5fff7329de0bdb47f826feb0": 1, "5fff734ade0bdb47f826feb1": 2,
                     "5fff7371de0bdb47f826feb2": 3, "5fff7380de0bdb47f826feb3":4, "5fff7399de0bdb47f826feb4":5}
     class_label = classid_dict[courseId]
