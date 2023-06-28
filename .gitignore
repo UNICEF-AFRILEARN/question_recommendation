@@ -1,3 +1,5 @@
 *.csv
 *.ipynb
 *.ini
+*.pyc
+__pycache__/
