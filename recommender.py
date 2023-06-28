@@ -5,7 +5,7 @@ import random
 import os
 from pymongo import MongoClient
 
-cluster = os.environ['MONGODB_KEY']
+cluster = os.environ['RECODB_KEY']
 
 client = MongoClient(cluster)
 db = client.afrilearn
