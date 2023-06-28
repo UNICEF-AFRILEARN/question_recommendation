@@ -2,8 +2,13 @@ from bson import ObjectId
 import pandas as pd
 import pickle
 import random
+import os
+from pymongo import MongoClient
 
+cluster = os.environ['MONGODB_KEY']
 
+client = MongoClient(cluster)
+db = client.afrilearn
 
 def get_prob_correct(model,unattempted_questions):
     X = unattempted_questions.drop(['next_attempt'],axis=1)
@@ -14,22 +19,21 @@ def get_recommendations(courseId,n_questions,userId=None,rec_type=None,lessonId=
     classid_dict={"5fff72b3de0bdb47f826feaf":0,"5fff7329de0bdb47f826feb0": 1, "5fff734ade0bdb47f826feb1": 2,
                     "5fff7371de0bdb47f826feb2": 3, "5fff7380de0bdb47f826feb3":4, "5fff7399de0bdb47f826feb4":5}
     class_label = classid_dict[courseId]
-    
-    responses_df = pd.read_parquet('responses.parquet')
-    responses_df = responses_df[responses_df["course_Id"]==courseId]
 
-    responses_df = responses_df.drop(["course_Id"],axis=1)
-    
-    label_transforms =  pickle.load(open('encoders.pkl','rb'))
-    label_encoders = label_transforms["label"+str(class_label)]
-
-    if userId:
+    if userId:          
+        label_transforms =  pickle.load(open('encoders.pkl','rb'))
+        label_encoders = label_transforms["label"+str(class_label)]
+        
         le_userId = label_encoders[2]
         userId_encoded = le_userId.transform([userId])[0]
         
-        unattempted_questions = responses_df[(responses_df["userId"]==userId_encoded)&(responses_df["number_of_attempts"]==0)]
+        unattempted_questions =pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":userId_encoded,"number_of_attempts":0})))
+
+
         if len(unattempted_questions)==0:
-            unattempted_questions = responses_df[(responses_df["userId"]==userId_encoded)]
+            unattempted_questions = pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":userId_encoded,"number_of_attempts":0})))
+
+        unattempted_questions= unattempted_questions.drop(["course_Id"],axis=1)
 
         models =  pickle.load(open('classifiers.pkl','rb'))
         model = models["classifier"+str(class_label)]
@@ -58,8 +62,10 @@ def get_recommendations(courseId,n_questions,userId=None,rec_type=None,lessonId=
         else:
             unattempted_questions.sort_values(by="prob_correct",ascending=False,inplace = True)
             recommended_questions = unattempted_questions['questionId'].values[:n_questions]
-    else: 
-        recommended_questions=random.choices(list(responses_df['questionId'].unique()),k=10)
-    recommended_questions  = le_questionId.inverse_transform(recommended_questions)
+            recommended_questions  = le_questionId.inverse_transform(recommended_questions)
+    else:
+        questions = pickle.load(open('questions.pkl','rb'))
+        recommended_questions=random.choices(list(questions['questionId'].unique()),k=10)
+        recommended_questions = [str(question) for question in recommended_questions]
     return recommended_questions
  

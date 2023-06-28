@@ -29,7 +29,6 @@ def reco_system():
 def submit():
     if request.method == 'POST' or request.method == 'GET':
         class_name = request.form['class_name']
-        print(request.form['n_questions'])
         n_questions = int(request.form['n_questions'])
         userId = request.form['userId']
         rec_type = request.form['rec_type']
