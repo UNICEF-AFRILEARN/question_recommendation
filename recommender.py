@@ -5,7 +5,7 @@ import random
 import os
 from pymongo import MongoClient
 
-cluster = os.environ['RECODB_KEY']
+cluster = os.environ['MONGODB_KEY']
 
 client = MongoClient(cluster)
 db = client.afrilearn
@@ -26,12 +26,12 @@ def get_recommendations(courseId,n_questions,userId=None,rec_type=None,lessonId=
         
         le_userId = label_encoders[2]
         userId_encoded = le_userId.transform([userId])[0]
-        
-        unattempted_questions =pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":userId_encoded,"number_of_attempts":0})))
+        print(userId_encoded)
+        unattempted_questions =pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":int(userId_encoded),"number_of_attempts":0})))
 
 
         if len(unattempted_questions)==0:
-            unattempted_questions = pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":userId_encoded,"number_of_attempts":0})))
+            unattempted_questions = pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":userId_encoded})))
 
         unattempted_questions= unattempted_questions.drop(["course_Id"],axis=1)
 
@@ -65,7 +65,7 @@ def get_recommendations(courseId,n_questions,userId=None,rec_type=None,lessonId=
             recommended_questions  = le_questionId.inverse_transform(recommended_questions)
     else:
         questions = pickle.load(open('questions.pkl','rb'))
-        recommended_questions=random.choices(list(questions['questionId'].unique()),k=10)
+        recommended_questions=random.choices(list(questions['_id'].unique()),k=10)
         recommended_questions = [str(question) for question in recommended_questions]
     return recommended_questions
  
