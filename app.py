@@ -28,14 +28,15 @@ def reco_system():
 @app.route('/submit', methods=['POST', 'GET'])
 def submit():
     if request.method == 'POST' or request.method == 'GET':
-        userId = request.form['userId']
         class_name = request.form['class_name']
+        print(request.form['n_questions'])
         n_questions = int(request.form['n_questions'])
+        userId = request.form['userId']
         rec_type = request.form['rec_type']
         lessonId = request.form['lessonId']
         subject_name = request.form['subject_name']
         if (class_name == '') or (n_questions == ''):
-            return render_template('index.html', message='Please enter required fields')
+            return render_template('questions.html', message='Please enter required fields')
         else:
             if userId:
                 questions = get_recommendations(class_name,n_questions,[ObjectId(userId)],rec_type,lessonId,subject_name)
