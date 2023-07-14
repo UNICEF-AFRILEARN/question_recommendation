@@ -5,10 +5,14 @@ import random
 import os
 from pymongo import MongoClient
 
-cluster = os.environ['RECODB_KEY']
+reco_cluster = os.environ['RECODB_KEY']
+main_cluster = os.environ['MAINDB_KEY']
 
-client = MongoClient(cluster)
+client = MongoClient(reco_cluster)
 db = client.afrilearn
+
+main_client = MongoClient(main_cluster)
+maindb = main_client.afrilearn
 
 def get_prob_correct(model,unattempted_questions:pd.DataFrame)->list:
     """
