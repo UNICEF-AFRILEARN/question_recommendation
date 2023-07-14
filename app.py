@@ -16,7 +16,10 @@ def reco_system():
         return jsonify({"response":"Send a POST request with userId, class_name, n_questions,rec_type"})
     else:
         data = request.get_json()
-        userId = data['userId']
+        if userId in data:
+            userId = data['userId']
+        else:
+            userId = None
         class_name= data['class_name']
         n_questions = int(data['n_questions'])
         rec_type = data['rec_type']
