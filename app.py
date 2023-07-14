@@ -22,7 +22,7 @@ def reco_system():
         rec_type = data['rec_type']
         lessonId = data['lessonId']
         subject_name = data['subject_name']
-        questions =get_recommendations([ObjectId(userId)],class_name,n_questions,rec_type,lessonId,subject_name)
+        questions = get_recommendations(class_name,n_questions,[ObjectId(userId)],rec_type,lessonId,subject_name)
         return questions
 
 @app.route('/submit', methods=['POST', 'GET'])

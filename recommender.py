@@ -10,12 +10,51 @@ cluster = os.environ['RECODB_KEY']
 client = MongoClient(cluster)
 db = client.afrilearn
 
-def get_prob_correct(model,unattempted_questions):
+def get_prob_correct(model,unattempted_questions:pd.DataFrame)->list:
+    """
+    The function `get_prob_correct` takes a machine learning model and a dataframe of unattempted
+    questions as input, and returns a list of the predicted probabilities of getting the questions
+    correct.
+    
+    :param model: The "model" parameter refers to a trained machine learning model that can predict the
+    probability of a correct answer given certain features of a question. It could be any model that has
+    a "predict_proba" method, such as a logistic regression model or a random forest classifier
+    :param unattempted_questions: The parameter "unattempted_questions" is a pandas DataFrame that
+    contains the data for the unattempted questions. It should have the following columns:
+    :type unattempted_questions: pd.DataFrame
+    :return: a list of probabilities of getting the correct answer for each unattempted question.
+    """
     X = unattempted_questions.drop(['next_attempt'],axis=1)
     prob_correct = model.predict_proba(X)[:,1]
     return prob_correct
 
-def get_recommendations(courseId,n_questions,userId=None,rec_type=None,lessonId=None,subject_name=None):
+def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:str=None,lessonId:str=None,subject_name:str=None)->list:
+    """
+    The function `get_recommendations` takes in various parameters such as courseId, n_questions,
+    userId, rec_type, lessonId, and subject_name, and returns a list of recommended questions based on
+    the given inputs.
+    
+    :param courseId: The `courseId` parameter is a string that represents the ID of the course for which
+    you want to get recommendations
+    :type courseId: str
+    :param n_questions: The parameter `n_questions` specifies the number of question recommendations
+    that you want to retrieve
+    :type n_questions: int
+    :param userId: The `userId` parameter is used to specify the user for whom the recommendations are
+    being generated. It is an optional parameter, so if it is not provided, the function will generate
+    random recommendations instead of personalized recommendations
+    :type userId: str
+    :param rec_type: The `rec_type` parameter is used to specify the type of recommendation you want. It
+    can have two possible values:
+    :type rec_type: str
+    :param lessonId: The `lessonId` parameter is used to specify the ID of a lesson for which you want
+    to get question recommendations
+    :type lessonId: str
+    :param subject_name: The `subject_name` parameter is used to specify the name of the subject for
+    which you want to get question recommendations
+    :type subject_name: str
+    :return: The function `get_recommendations` returns a list of recommended question IDs.
+    """
     classid_dict={"5fff72b3de0bdb47f826feaf":0,"5fff7329de0bdb47f826feb0": 1, "5fff734ade0bdb47f826feb1": 2,
                     "5fff7371de0bdb47f826feb2": 3, "5fff7380de0bdb47f826feb3":4, "5fff7399de0bdb47f826feb4":5}
     class_label = classid_dict[courseId]
@@ -26,7 +65,6 @@ def get_recommendations(courseId,n_questions,userId=None,rec_type=None,lessonId=
         
         le_userId = label_encoders[2]
         userId_encoded = le_userId.transform([userId])[0]
-        print(userId_encoded)
         unattempted_questions =pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":int(userId_encoded),"number_of_attempts":0})))
 
 

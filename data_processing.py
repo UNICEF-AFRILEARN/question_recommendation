@@ -42,7 +42,16 @@ def get_user_data(courseId):
     questions.to_pickle("questions.pkl")
     return userIds, questions_df,questions
 
-def get_synthetic_data(class_name):
+def get_synthetic_data(class_name:str)->pd.DataFrame:
+    """
+    The `get_synthetic_data` function generates synthetic data for a given class by simulating user
+    attempts and success rates for each question.
+    
+    :param class_name: The `class_name` parameter is a string that represents the name of the class for
+    which you want to generate synthetic data
+    :type class_name: str
+    :return: The function `get_synthetic_data` returns a pandas DataFrame containing synthetic data.
+    """
     userIds,questions_df,questions_with_class = get_user_data(class_name)
     questionIds = list(questions_df['questionId'].values)
     # Create an empty list to store the generated data
