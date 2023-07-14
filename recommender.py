@@ -5,7 +5,14 @@ import random
 import os
 from pymongo import MongoClient
 
-cluster = os.environ['RECODB_KEY']
+from configparser import ConfigParser
+config_object = ConfigParser()
+config_object.read("config.ini")
+connection_details = config_object["MONGODB"]
+cluster = eval(connection_details["cluster"])
+
+
+#cluster = os.environ['RECODB_KEY']
 
 client = MongoClient(cluster)
 db = client.afrilearn
