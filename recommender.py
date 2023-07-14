@@ -66,18 +66,20 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
                     "5fff7371de0bdb47f826feb2": 3, "5fff7380de0bdb47f826feb3":4, "5fff7399de0bdb47f826feb4":5}
     class_label = classid_dict[courseId]
 
-    if userId:          
+    if userId:
+        print(userId)         
         label_transforms =  pickle.load(open('encoders.pkl','rb'))
         label_encoders = label_transforms["label"+str(class_label)]
         
         le_userId = label_encoders[2]
         userId_encoded = le_userId.transform([userId])[0]
+        print(userId_encoded)
         unattempted_questions =pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":int(userId_encoded),"number_of_attempts":0})))
 
-
         if len(unattempted_questions)==0:
-            unattempted_questions = pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":userId_encoded})))
-
+            unattempted_questions = pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":int(userId_encoded)})))
+        if len(unattempted_questions)==0:
+            raise ValueError("This userId and classId combination is not in the database.")
         unattempted_questions= unattempted_questions.drop(["_id","course_Id"],axis=1)
 
 
