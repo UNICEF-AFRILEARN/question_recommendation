@@ -20,7 +20,10 @@ def reco_system():
         class_name= data['class_name']
         n_questions = int(data['n_questions'])
         rec_type = data['rec_type']
-        lessonId = data['lessonId']
+        if "lessonId" in data:
+            lessonId = data['lessonId']
+        else:
+            lessonId = None
         subject_name = data['subject_name']
         if userId:
             questions = get_recommendations(class_name,n_questions,[ObjectId(userId)],rec_type,lessonId,subject_name)
