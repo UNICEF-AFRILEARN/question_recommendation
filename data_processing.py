@@ -1,19 +1,17 @@
 import pandas as pd
 from pymongo import MongoClient
-from configparser import ConfigParser
 from sklearn.preprocessing import LabelEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 import random
+import os
 
-config_object = ConfigParser()
-config_object.read("config.ini")
-connection_details = config_object["MONGODB"]
-cluster = eval(connection_details["cluster"])
+main_cluster = os.environ['MAINDB_KEY']
 
-client = MongoClient(cluster)
-db=client.afrilearn
+client = MongoClient(main_cluster)
+db = client.afrilearn
+
 
 def get_classes(df):
     lesson_map = pd.read_csv("lessonid_class_map.csv",index_col=[0])

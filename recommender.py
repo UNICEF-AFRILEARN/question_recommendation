@@ -70,7 +70,6 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
         
         le_userId = label_encoders[2]
         userId_encoded = le_userId.transform([userId])[0]
-        print(userId_encoded)
         unattempted_questions =pd.DataFrame(list(db.studentresponses.find({"course_Id":courseId,"userId":int(userId_encoded),"number_of_attempts":0})))
 
         if len(unattempted_questions)==0:
@@ -78,7 +77,6 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
         if len(unattempted_questions)==0:
             raise ValueError("This userId and classId combination is not in the database.")
         unattempted_questions= unattempted_questions.drop(["_id","course_Id"],axis=1)
-
 
         models =  pickle.load(open('classifiers.pkl','rb'))
         model = models["classifier"+str(class_label)]
@@ -111,6 +109,6 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
     else:
         questions = pickle.load(open('questions.pkl','rb'))
         recommended_questions=random.choices(list(questions['_id'].unique()),k=10)
-        recommended_questions = [str(question) for question in recommended_questions]
-    return recommended_questions
+    recommended_questions = pd.DataFrame(list(maindb.aiquestionslight.find({'_id':{"$in":recommended_questions}})))
+    return recommended_questions.to_dict("records")
  
