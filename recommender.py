@@ -63,8 +63,7 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
                     "5fff7371de0bdb47f826feb2": 3, "5fff7380de0bdb47f826feb3":4, "5fff7399de0bdb47f826feb4":5}
     class_label = classid_dict[courseId]
 
-    if userId:
-        print(userId)         
+    if userId:         
         label_transforms =  pickle.load(open('encoders.pkl','rb'))
         label_encoders = label_transforms["label"+str(class_label)]
         
@@ -108,7 +107,8 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
         recommended_questions  = list(le_questionId.inverse_transform(recommended_questions))
     else:
         questions = pickle.load(open('questions.pkl','rb'))
-        recommended_questions=random.choices(list(questions['_id'].unique()),k=10)
+        questions = questions[questions['subjectId']==subject_name]
+        recommended_questions=random.choices(list(questions['_id'].unique()),k=n_questions)
     recommended_questions = pd.DataFrame(list(maindb.aiquestionslight.find({'_id':{"$in":recommended_questions}})))
     return recommended_questions.to_dict("records")
  
