@@ -2,7 +2,6 @@ from bson import ObjectId
 import pandas as pd
 import pickle
 import random
-import json
 import os
 from pymongo import MongoClient
 
@@ -116,5 +115,5 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
         questions = questions[questions['subjectId']==subject_name]
         recommended_questions=random.choices(list(questions['_id'].unique()),k=n_questions)
     recommended_questions = pd.DataFrame(list(maindb.aiquestionslight.find({'_id':{"$in":recommended_questions}})))
-    recommended_questions= json.dumps(recommended_questions, default=handle_objectid)
-    return recommended_questions
+    recommended_questions['_id'] = recommended_questions['_id'].astype(str)
+    return recommended_questions.to_json(orient="records")
