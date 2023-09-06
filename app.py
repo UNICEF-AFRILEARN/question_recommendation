@@ -61,7 +61,6 @@ def submit():
                 questions = get_recommendations(class_name,n_questions,[ObjectId(userId)],rec_type,lessonId,subject_name)
             else:
                 questions = get_recommendations(class_name,n_questions,userId,rec_type,lessonId,subject_name)
-            questions = [str(value) for value in questions]
             return questions
     else:
         return render_template('index.html', message='Please enter required fields')
