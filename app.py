@@ -37,8 +37,7 @@ def reco_system():
             questions = get_recommendations(class_name,n_questions,[ObjectId(userId)],rec_type,lessonId,subject_name)
         else:
             questions = get_recommendations(class_name,n_questions,userId,rec_type,lessonId,subject_name)
-        questions = [str(value) for value in questions]
-        return questions
+        return jsonify(questions)
 
 @app.route('/submit', methods=['POST', 'GET'])
 def submit():
@@ -61,7 +60,7 @@ def submit():
                 questions = get_recommendations(class_name,n_questions,[ObjectId(userId)],rec_type,lessonId,subject_name)
             else:
                 questions = get_recommendations(class_name,n_questions,userId,rec_type,lessonId,subject_name)
-            return questions
+            return jsonify(questions.to_dict("index"))
     else:
         return render_template('index.html', message='Please enter required fields')
     
