@@ -110,5 +110,4 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
         questions = questions[questions['subjectId']==subject_name]
         recommended_questions=random.choices(list(questions['_id'].unique()),k=n_questions)
     recommended_questions = pd.DataFrame(list(maindb.aiquestionslight.find({'_id':{"$in":recommended_questions}})))
-    return recommended_questions.to_dict("records")
- 
+    return recommended_questions.to_dict("index") 
