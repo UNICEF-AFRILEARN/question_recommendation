@@ -2,6 +2,7 @@ from bson import ObjectId
 import pandas as pd
 import pickle
 import random
+import json
 import os
 from pymongo import MongoClient
 
@@ -13,6 +14,11 @@ db = client.afrilearn
 
 main_client = MongoClient(main_cluster)
 maindb = main_client.afrilearn
+
+def handle_objectid(obj):
+    if isinstance(obj, ObjectId):
+        return str(obj)
+    raise TypeError("Object of type '%s' is not JSON serializable" % type(obj).__name__)
 
 def get_prob_correct(model,unattempted_questions:pd.DataFrame)->list:
     """
@@ -110,4 +116,5 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
         questions = questions[questions['subjectId']==subject_name]
         recommended_questions=random.choices(list(questions['_id'].unique()),k=n_questions)
     recommended_questions = pd.DataFrame(list(maindb.aiquestionslight.find({'_id':{"$in":recommended_questions}})))
-    return recommended_questions.to_dict("records") 
+    recommended_questions= json.dumps(recommended_questions, default=handle_objectid)
+    return recommended_questions
