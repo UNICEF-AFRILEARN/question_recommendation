@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 from bson import ObjectId
 from sklearn.linear_model import LogisticRegression
-from recommender import get_prob_correct, get_recommendations
+from .recommender import get_prob_correct, get_recommendations
 
 
 @pytest.fixture(scope="module")
@@ -25,7 +25,7 @@ def test_get_prob_correct(sample_data):
 def test_get_recommendations():
     courseId = "5fff72b3de0bdb47f826feaf"
     n_questions = 5
-    userId = "user1"
+    userId = None
     rec_type = "lesson"
     lessonId = str(ObjectId())
     recommended_questions = get_recommendations(

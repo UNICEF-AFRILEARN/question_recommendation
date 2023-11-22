@@ -6,8 +6,13 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 import random
 import os
+from configparser import ConfigParser
 
-main_cluster = os.environ['MAINDB_KEY']
+config_object = ConfigParser()
+config_object.read("config.ini")
+
+reco_cluster = config_object["RECOSYSTEM"]
+main_cluster = config_object["MONGODB"]
 
 client = MongoClient(main_cluster)
 db = client.afrilearn
