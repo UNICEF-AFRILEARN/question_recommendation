@@ -159,7 +159,6 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
         questions = pickle.load(open('questions.pkl','rb')) 
         questions = questions[(questions['subjectId']==subjectId) & (questions['courseId']==courseId)]
         recommended_questions=random.choices(list(questions['_id'].unique()),k=n_questions)
-        print(recommended_questions)
     recommended_questions = pd.DataFrame(list(maindb.aiquestionslight.find({'_id':{"$in":recommended_questions}})))
     recommended_questions['_id'] = recommended_questions['_id'].astype(str)
     recommended_questions['options'] = recommended_questions['options'].apply(lambda x: [{'key': k, 'value': v} for k, v in eval(x).items()])
