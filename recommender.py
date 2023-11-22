@@ -18,15 +18,15 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 # for local testing
-#config_object = ConfigParser()
-#config_object.read("config.ini")
+config_object = ConfigParser()
+config_object.read("config.ini")
 
-#reco_cluster = eval(config_object.get("RECOSYSTEM","cluster"))
-#main_cluster = eval(config_object.get("MONGODB","cluster"))
+reco_cluster = eval(config_object.get("RECOSYSTEM","cluster"))
+main_cluster = eval(config_object.get("MONGODB","cluster"))
 
 
-reco_cluster = os.environ["RECODB_KEY"]
-main_cluster = os.environ["MONGODB_KEY"]
+#reco_cluster = os.environ["RECODB_KEY"]
+#main_cluster = os.environ["MONGODB_KEY"]
 
 client = MongoClient(reco_cluster)
 db = client.afrilearn
