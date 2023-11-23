@@ -18,15 +18,15 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 # for local testing
-config_object = ConfigParser()
-config_object.read("config.ini")
+#config_object = ConfigParser()
+#config_object.read("config.ini")
 
-reco_cluster = eval(config_object.get("RECOSYSTEM","cluster"))
-main_cluster = eval(config_object.get("MONGODB","cluster"))
+#reco_cluster = eval(config_object.get("RECOSYSTEM","cluster"))
+#main_cluster = eval(config_object.get("MONGODB","cluster"))
 
 
-#reco_cluster = os.environ["RECODB_KEY"]
-#main_cluster = os.environ["MONGODB_KEY"]
+reco_cluster = os.environ["RECODB_KEY"]
+main_cluster = os.environ["MAINDB_KEY"]
 
 client = MongoClient(reco_cluster)
 db = client.afrilearn
@@ -57,7 +57,7 @@ def get_prob_correct(model,unattempted_questions:pd.DataFrame)->list:
     prob_correct = model.predict_proba(X)[:,1]
     return prob_correct
 
-def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:str=None,lessonId:str=None,subject_name:str=None)->list:
+def get_recommendations(class_name:str,n_questions:int,userId:str=None,rec_type:str=None,lessonId:str=None,subject_name:str=None)->list:
     """
     The function `get_recommendations` takes in various parameters such as courseId, n_questions,
     userId, rec_type, lessonId, and subject_name, and returns a list of recommended questions based on
@@ -86,14 +86,14 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
     """
     converter = pd.read_parquet("converter.parquet")
     try:
-        courseId = converter.loc[converter['new_courseId'] == str(courseId), 'old_courseId'].values[0]
+        courseId = converter.loc[converter['class_name'] == str(class_name), 'old_courseId'].values[0]
     except Exception as e:
         comment = "Invalid courseId"
         logger.info(comment)
         raise ValueError(comment)
     
     try:
-        subjectId = converter.loc[converter['new_subjectId'] == str(subject_name), 'old_subjectId'].values[0]
+        subjectId = converter.loc[(converter['subject_name'] == str(subject_name))&(converter['class_name'] == str(class_name)), 'old_subjectId'].values[0]
     except Exception as e:
         comment = "Invalid subjectId"
         logger.info(comment)
@@ -156,10 +156,11 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
             logger.info(e)
             raise ValueError("This is not a valid userId")
     else:
-        questions = pickle.load(open('questions.pkl','rb')) 
+        questions = pickle.load(open('questions.pkl','rb'))
         questions = questions[(questions['subjectId']==subjectId) & (questions['courseId']==courseId)]
+        n_questions = min(n_questions,len(questions))
         recommended_questions=random.choices(list(questions['_id'].unique()),k=n_questions)
-    recommended_questions = pd.DataFrame(list(maindb.aiquestionslight.find({'_id':{"$in":recommended_questions}})))
+    recommended_questions = questions[questions['_id'].isin(recommended_questions)]
     recommended_questions['_id'] = recommended_questions['_id'].astype(str)
     recommended_questions['options'] = recommended_questions['options'].apply(lambda x: [{'key': k, 'value': v} for k, v in eval(x).items()])
     return recommended_questions.to_dict(orient="records")
