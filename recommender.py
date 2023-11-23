@@ -85,6 +85,7 @@ def get_recommendations(courseId:str,n_questions:int,userId:str=None,rec_type:st
     :return: The function `get_recommendations` returns a list of recommended question IDs.
     """
     converter = pd.read_parquet("converter.parquet")
+    #convert to jss-1, agricultural-science
     try:
         courseId = converter.loc[converter['new_courseId'] == str(courseId), 'old_courseId'].values[0]
     except Exception as e:
