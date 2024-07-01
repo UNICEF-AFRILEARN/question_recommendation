@@ -157,7 +157,7 @@ def get_recommendations(class_name:str,n_questions:int,userId:str=None,rec_type:
             raise ValueError("This is not a valid userId")
     else:
         questions = pickle.load(open('questions.pkl','rb'))
-        questions = questions[(questions['subjectId']==subjectId) & (questions['courseId']==courseId)]
+        questions = questions[(questions['subject_name']==subject_name) & (questions['class_name']==class_name)]
         n_questions = min(n_questions,len(questions))
         recommended_questions=random.choices(list(questions['_id'].unique()),k=n_questions)
     recommended_questions = questions[questions['_id'].isin(recommended_questions)]
